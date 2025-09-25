@@ -28,10 +28,26 @@ async def test_server():
 
             # List available resources
             print("=== Available Resources ===")
-            resources = await session.list_resources()
+            resources_result = await session.list_resources()
+
+            # Handle different response formats
+            if hasattr(resources_result, 'resources'):
+                resources = resources_result.resources
+            elif isinstance(resources_result, (list, tuple)):
+                resources = resources_result
+            else:
+                resources = [resources_result]
+
             for resource in resources:
-                print(f"- {resource.name} ({resource.uri})")
-                print(f"  {resource.description}")
+                # Handle both tuple and object formats
+                if hasattr(resource, 'name'):
+                    print(f"- {resource.name} ({resource.uri})")
+                    print(f"  {resource.description}")
+                elif isinstance(resource, tuple) and len(resource) >= 3:
+                    print(f"- {resource[0]} ({resource[1]})")
+                    print(f"  {resource[2]}")
+                else:
+                    print(f"- {resource}")
                 print()
 
             # Test reading a few key resources
@@ -44,7 +60,9 @@ async def test_server():
             for uri in test_resources:
                 print(f"=== Reading {uri} ===")
                 try:
-                    content = await session.read_resource(uri)
+                    result = await session.read_resource(uri)
+                    # Extract content from ReadResourceResult
+                    content = result.contents[0].text if hasattr(result, 'contents') and result.contents else str(result)
                     # Show first 200 characters
                     print(content[:200] + "..." if len(content) > 200 else content)
                     print()
@@ -54,10 +72,26 @@ async def test_server():
 
             # List available prompts
             print("=== Available Prompts ===")
-            prompts = await session.list_prompts()
+            prompts_result = await session.list_prompts()
+
+            # Handle different response formats
+            if hasattr(prompts_result, 'prompts'):
+                prompts = prompts_result.prompts
+            elif isinstance(prompts_result, (list, tuple)):
+                prompts = prompts_result
+            else:
+                prompts = [prompts_result]
+
             for prompt in prompts:
-                print(f"- {prompt.name}")
-                print(f"  {prompt.description}")
+                # Handle both tuple and object formats
+                if hasattr(prompt, 'name'):
+                    print(f"- {prompt.name}")
+                    print(f"  {prompt.description}")
+                elif isinstance(prompt, tuple) and len(prompt) >= 2:
+                    print(f"- {prompt[0]}")
+                    print(f"  {prompt[1]}")
+                else:
+                    print(f"- {prompt}")
                 print()
 
 

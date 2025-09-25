@@ -81,9 +81,9 @@ class GraphRAGMCPServer:
 
         # Register all resources
         for resource in GRAPHRAG_RESOURCES:
-            if resource.uri in content_generators:
+            if str(resource.uri) in content_generators:
                 self.resource_registry.register_resource(
-                    resource, content_generators[resource.uri]
+                    resource, content_generators[str(resource.uri)]
                 )
             elif str(resource.uri).startswith("graphrag://patterns/"):
                 def make_pattern_generator(uri):
