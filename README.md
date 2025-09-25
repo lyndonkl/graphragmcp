@@ -50,11 +50,15 @@ graphragmcp/
 │       └── utils/           # Utilities and exceptions
 │           ├── __init__.py
 │           └── exceptions.py   # Custom exceptions
+├── agents/
+│   └── graphrag_specialist.md  # Specialized GraphRAG agent for Claude Code
 ├── docs/
 │   └── Knowledge Graph Construction & Retrieval Strategies for LLM Reasoning.pdf
 ├── examples/
 │   ├── test_client.py        # Test client to verify server functionality
-│   └── claude_desktop_config.json  # Configuration for Claude Desktop
+│   ├── claude_desktop_config.json  # Configuration for Claude Desktop
+│   └── .claude/agents/      # Example Claude Code project structure
+│       └── graphrag_specialist.md  # Agent configuration example
 └── tests/                    # Future test files
 ```
 
@@ -140,6 +144,137 @@ graphragmcp/
 The server follows the MCP standard and should work with any compatible client. Use:
 - **Command**: `python`
 - **Args**: `["/path/to/graphragmcp/src/main.py"]` (recommended) or `["/path/to/graphragmcp/src/server.py"]` (legacy)
+
+## 🤖 GraphRAG Specialist Agent Integration
+
+This project includes a **specialized GraphRAG agent** designed to work with Claude Code, providing expert-level assistance with Knowledge Graph Construction & Retrieval strategies.
+
+### 🎯 Agent Capabilities
+
+The GraphRAG Specialist Agent provides:
+
+- **🗂️ Knowledge Graph Construction**: Expert guidance on LLM-assisted entity extraction, event reification, layered architectures, provenance tracking, temporal modeling, and hybrid symbolic-vector integration
+- **🔗 Embedding & Representation Strategies**: Advanced techniques for node, edge, path, and subgraph embeddings with multi-modal fusion
+- **🔍 Retrieval & Search Orchestration**: Implementation guidance for global-first, local-first, U-shaped hybrid, query decomposition, temporal, and constraint-guided retrieval strategies
+- **🏗️ Architecture & Technology Stacks**: Comprehensive knowledge of graph databases, vector databases, frameworks, and cloud platform optimization
+- **🛠️ Implementation Guidance**: Step-by-step roadmaps, code examples, performance optimization, and production deployment strategies
+
+### 📋 Setup Instructions
+
+#### Option 1: Using Claude Code Desktop (Recommended)
+
+1. **Ensure the MCP server is configured** (see configuration section above)
+
+2. **Create or open a project in Claude Code**
+
+3. **Add the GraphRAG Specialist Agent**:
+   ```bash
+   # Create the agents directory in your project
+   mkdir -p .claude/agents
+
+   # Copy the agent configuration
+   cp agents/graphrag_specialist.md .claude/agents/
+   ```
+
+   Or manually place `graphrag_specialist.md` in your project's `.claude/agents/` directory.
+
+4. **Activate the agent**:
+   - The agent will be automatically available in Claude Code
+   - Reference it with `@graphrag-specialist` or by asking GraphRAG-related questions
+   - The agent will automatically use the MCP server to provide comprehensive, research-backed answers
+
+#### Option 2: Global Agent Installation
+
+To make the agent available across all Claude Code projects:
+
+1. **Install globally**:
+   ```bash
+   # Create global agents directory
+   mkdir -p ~/.claude/agents
+
+   # Copy the agent configuration
+   cp agents/graphrag_specialist.md ~/.claude/agents/
+   ```
+
+2. **The agent will be available in all Claude Code projects**
+
+#### Option 3: Custom Agent Configuration
+
+If you want to customize the agent:
+
+1. **Copy and modify the agent file**:
+   ```bash
+   cp agents/graphrag_specialist.md .claude/agents/my-custom-graphrag-agent.md
+   ```
+
+2. **Edit the YAML frontmatter**:
+   - Change the `name` field to your custom name
+   - Modify the `description` for different specialization
+   - Adjust the system prompt as needed
+
+3. **Ensure MCP server accessibility**:
+   - The agent relies on the GraphRAG MCP server for detailed knowledge
+   - Make sure the server is running and accessible
+
+### 🚀 Using the GraphRAG Agent
+
+Once configured, you can interact with the GraphRAG Specialist Agent for:
+
+#### 🎯 Use Case Analysis
+```
+@graphrag-specialist I need to build a knowledge graph for a healthcare application that processes patient records and medical literature. What GraphRAG patterns should I use?
+```
+
+#### 🛠️ Implementation Guidance
+```
+@graphrag-specialist How do I implement a U-shaped hybrid retrieval strategy using Neo4j and Pinecone?
+```
+
+#### 📊 Architecture Decisions
+```
+@graphrag-specialist Should I use LPG or RDF for a financial compliance knowledge graph with 50M entities?
+```
+
+#### 🔧 Technology Stack Recommendations
+```
+@graphrag-specialist What's the best technology stack for a scalable GraphRAG system on AWS?
+```
+
+#### 📈 Performance Optimization
+```
+@graphrag-specialist How can I optimize my GraphRAG system's query performance for real-time applications?
+```
+
+### 🔄 Agent + MCP Server Workflow
+
+The agent follows this workflow:
+
+1. **Analyzes your question** to understand GraphRAG requirements
+2. **Queries the MCP server** for relevant research and patterns
+3. **Uses specialized prompts** for structured analysis
+4. **Provides comprehensive recommendations** with implementation details
+5. **Includes code examples** and architectural guidance
+6. **Suggests evaluation metrics** and optimization strategies
+
+### 💡 Example Interaction
+
+**User**: "I need to implement GraphRAG for a legal document analysis system. The system needs to handle complex multi-party contracts and regulatory relationships."
+
+**GraphRAG Agent Response**:
+1. **Queries MCP server** for construction patterns and legal domain examples
+2. **Uses "analyze-graphrag-pattern" prompt** with legal domain context
+3. **Recommends Event Reification pattern** for multi-party relationships
+4. **Suggests Neo4j + Pinecone stack** with reasoning
+5. **Provides implementation roadmap** with specific phases
+6. **Includes code examples** for entity extraction and relationship modeling
+7. **Recommends evaluation metrics** for legal document accuracy
+
+### 🛡️ Best Practices
+
+- **Start with requirements analysis**: The agent will help you identify the best patterns
+- **Ask for implementation details**: Get specific code examples and architectural guidance
+- **Request performance considerations**: Understand scaling and optimization strategies
+- **Validate recommendations**: The agent provides research-backed suggestions you can verify
 
 ## 🧪 Testing the Server
 
@@ -267,6 +402,7 @@ This project features a **distinguished engineer-ready** modular architecture:
 - **🎯 Specialized Prompts**: Domain-specific prompts for GraphRAG analysis
 - **📖 Complete Fidelity**: 100% faithful to original research content
 - **🔧 Enterprise-Ready**: Modular, maintainable, and extensible architecture
+- **🤖 Specialized Agent**: Pre-configured GraphRAG expert agent for Claude Code integration
 
 ## 🛠️ Development
 
@@ -336,12 +472,25 @@ This project packages and structures existing research for MCP access. Please re
 - Check Claude Desktop's logs for connection errors
 - Verify the server starts without errors
 
+**Agent not working with MCP server**:
+- Ensure the MCP server is running and accessible
+- Verify the agent configuration file is in the correct location
+- Check that Claude Code can access the MCP server configuration
+- Test the MCP server independently before using with the agent
+
+**Agent not providing detailed responses**:
+- Verify the MCP server is properly configured and responding
+- Check that the agent has access to all 27 knowledge resources
+- Ensure the specialized prompts are working (test with MCP client)
+- Try asking more specific questions about GraphRAG patterns
+
 ### Getting Help
 
 1. **Check Error Messages**: Run the server directly to see detailed error output
 2. **Test with Example Client**: Use `python examples/test_client.py` to isolate issues
 3. **Verify Dependencies**: Ensure all required packages are installed
 4. **Check File Paths**: Ensure all paths in configs are correct and accessible
+5. **Test Agent Separately**: Try the MCP server directly before integrating with the agent
 
 ## 📈 Performance Notes
 
