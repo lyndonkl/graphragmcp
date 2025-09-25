@@ -14,11 +14,10 @@ Strategies for LLM Reasoning"
 import json
 import logging
 from typing import Any, Dict, List, Optional, Union
-from mcp import Resource, Tool, TextContent, ImageContent, EmbeddedResource
+import mcp.types as types
 from mcp.server import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 import mcp.server.stdio
-import mcp.types as types
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

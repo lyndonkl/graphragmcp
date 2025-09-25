@@ -11,19 +11,30 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     # Import all the content functions from the original server
-    from server import (
-        _get_overview_content,
-        _get_construction_patterns_content,
-        _get_embedding_strategies_content,
-        _get_retrieval_strategies_content,
-        _get_architectural_tradeoffs_content,
-        _get_literature_landscape_content,
-        _get_technology_stacks_content,
-        _get_pattern_catalog_content,
-        _get_construction_pattern_detail,
-        _get_embedding_strategy_detail,
-        _get_retrieval_strategy_detail,
-    )
+    import sys
+    import os
+    # Add the parent directory to find server.py
+    server_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "server.py")
+    if os.path.exists(server_path):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("server", server_path)
+        server_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(server_module)
+
+        # Import all the content functions from the loaded module
+        _get_overview_content = server_module._get_overview_content
+        _get_construction_patterns_content = server_module._get_construction_patterns_content
+        _get_embedding_strategies_content = server_module._get_embedding_strategies_content
+        _get_retrieval_strategies_content = server_module._get_retrieval_strategies_content
+        _get_architectural_tradeoffs_content = server_module._get_architectural_tradeoffs_content
+        _get_literature_landscape_content = server_module._get_literature_landscape_content
+        _get_technology_stacks_content = server_module._get_technology_stacks_content
+        _get_pattern_catalog_content = server_module._get_pattern_catalog_content
+        _get_construction_pattern_detail = server_module._get_construction_pattern_detail
+        _get_embedding_strategy_detail = server_module._get_embedding_strategy_detail
+        _get_retrieval_strategy_detail = server_module._get_retrieval_strategy_detail
+    else:
+        raise ImportError("Could not find server.py file")
 
     # Export all content functions
     get_overview_content = _get_overview_content

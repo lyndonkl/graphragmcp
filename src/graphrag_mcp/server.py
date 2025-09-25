@@ -8,11 +8,10 @@ knowledge about Knowledge Graph Construction & Retrieval Strategies for LLM Reas
 import logging
 from typing import List, Dict
 
-from mcp import Server
-from mcp.server import NotificationOptions
+import mcp.types as types
+from mcp.server import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 import mcp.server.stdio
-import mcp.types as types
 
 from .config import ServerConfig, setup_logging
 from .resources import ResourceRegistry, GRAPHRAG_RESOURCES
@@ -23,7 +22,7 @@ from .prompts.generators import (
     generate_implement_retrieval_strategy_prompt,
     generate_compare_architectures_prompt,
 )
-from .content.loader import (
+from .content import (
     get_overview_content,
     get_construction_patterns_content,
     get_embedding_strategies_content,
@@ -86,17 +85,29 @@ class GraphRAGMCPServer:
                 self.resource_registry.register_resource(
                     resource, content_generators[resource.uri]
                 )
-            elif resource.uri.startswith("graphrag://patterns/"):
+            elif str(resource.uri).startswith("graphrag://patterns/"):
+                def make_pattern_generator(uri):
+                    async def generator():
+                        return await get_construction_pattern_detail(str(uri))
+                    return generator
                 self.resource_registry.register_resource(
-                    resource, lambda uri=resource.uri: get_construction_pattern_detail(uri)
+                    resource, make_pattern_generator(resource.uri)
                 )
-            elif resource.uri.startswith("graphrag://embeddings/"):
+            elif str(resource.uri).startswith("graphrag://embeddings/"):
+                def make_embedding_generator(uri):
+                    async def generator():
+                        return await get_embedding_strategy_detail(str(uri))
+                    return generator
                 self.resource_registry.register_resource(
-                    resource, lambda uri=resource.uri: get_embedding_strategy_detail(uri)
+                    resource, make_embedding_generator(resource.uri)
                 )
-            elif resource.uri.startswith("graphrag://retrieval/"):
+            elif str(resource.uri).startswith("graphrag://retrieval/"):
+                def make_retrieval_generator(uri):
+                    async def generator():
+                        return await get_retrieval_strategy_detail(str(uri))
+                    return generator
                 self.resource_registry.register_resource(
-                    resource, lambda uri=resource.uri: get_retrieval_strategy_detail(uri)
+                    resource, make_retrieval_generator(resource.uri)
                 )
 
         self.logger.info(f"Registered {len(GRAPHRAG_RESOURCES)} resources")

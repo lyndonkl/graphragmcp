@@ -1,9 +1,6 @@
 # GraphRAG MCP Server Dependencies
 # Core MCP server framework
-mcp>=1.0.0
-
-# Async support
-asyncio-mqtt>=0.16.0
+mcp>=1.14.0
 
 # Type checking
 typing-extensions>=4.7.0

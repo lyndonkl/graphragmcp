@@ -6,7 +6,7 @@ dependencies:
   - python=3.11
   - pip
   - pip:
-    - mcp>=1.0.0
+    - mcp>=1.14.0
     - typing-extensions>=4.7.0
     # Optional testing dependencies
     # - openai>=1.0.0
