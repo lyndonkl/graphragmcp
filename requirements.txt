@@ -1,0 +1,20 @@
+# GraphRAG MCP Server Dependencies
+# Core MCP server framework
+mcp>=1.0.0
+
+# Async support
+asyncio-mqtt>=0.16.0
+
+# Type checking
+typing-extensions>=4.7.0
+
+# Optional: For testing the server functionality
+# Uncomment if you want to test with these providers
+# openai>=1.0.0
+# anthropic>=0.7.0
+
+# Development dependencies (optional)
+# pytest>=7.0.0
+# pytest-asyncio>=0.21.0
+# black>=23.0.0
+# mypy>=1.5.0
