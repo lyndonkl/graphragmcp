@@ -224,6 +224,29 @@ graphragmcp/
    - Use **absolute paths only** - relative paths will not work
    - For Windows, use forward slashes or escaped backslashes in paths
 
+   **🔧 Troubleshooting uv path issues**:
+   If you get `spawn uv ENOENT` errors, use the full path to uv:
+   ```bash
+   # Find where uv is installed
+   which uv
+   ```
+   Then use the full path in your config:
+   ```json
+   {
+     "mcpServers": {
+       "graphrag-mcp": {
+         "command": "/Users/YOUR_USERNAME/.local/bin/uv",
+         "args": [
+           "--directory",
+           "/ABSOLUTE/PATH/TO/graphragmcp",
+           "run",
+           "src/main.py"
+         ]
+       }
+     }
+   }
+   ```
+
 3. **Restart Claude Desktop** to load the server.
 
 4. **Verify the server is working**:
