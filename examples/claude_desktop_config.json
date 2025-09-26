@@ -1,9 +1,13 @@
 {
   "mcpServers": {
     "graphrag-mcp": {
-      "command": "python",
-      "args": ["/Users/YOUR_USERNAME/Documents/Projects/graphragmcp/src/server.py"],
-      "env": {}
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/graphragmcp",
+        "run",
+        "src/main.py"
+      ]
     }
   }
 }

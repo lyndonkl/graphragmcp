@@ -18,7 +18,7 @@ async def test_server():
     # Connect to the server
     server_params = StdioServerParameters(
         command="python",
-        args=["../src/main.py"],
+        args=["src/main.py"],
     )
 
     async with stdio_client(server_params) as (read, write):
