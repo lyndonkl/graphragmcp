@@ -16,6 +16,7 @@ import mcp.server.stdio
 from .config import ServerConfig, setup_logging
 from .resources import ResourceRegistry, GRAPHRAG_RESOURCES
 from .prompts import PromptRegistry, GRAPHRAG_PROMPTS
+from .tools import ToolRegistry, GRAPHRAG_TOOLS
 from .prompts.generators import (
     generate_analyze_pattern_prompt,
     generate_design_knowledge_graph_prompt,
@@ -55,10 +56,12 @@ class GraphRAGMCPServer:
         # Initialize registries
         self.resource_registry = ResourceRegistry(self.logger)
         self.prompt_registry = PromptRegistry(self.logger)
+        self.tool_registry = ToolRegistry()
 
         # Set up server handlers
         self._setup_resources()
         self._setup_prompts()
+        self._setup_tools()
         self._setup_handlers()
 
         self.logger.info(f"GraphRAG MCP Server initialized (v{self.config.server_version})")
@@ -81,34 +84,42 @@ class GraphRAGMCPServer:
 
         # Register all resources
         for resource in GRAPHRAG_RESOURCES:
-            if str(resource.uri) in content_generators:
+            uri_str = str(resource.uri)
+            self.logger.debug(f"Processing resource: {uri_str}")
+            if uri_str in content_generators:
+                self.logger.debug(f"Found content generator for: {uri_str}")
                 self.resource_registry.register_resource(
-                    resource, content_generators[str(resource.uri)]
+                    resource, content_generators[uri_str]
                 )
             elif str(resource.uri).startswith("graphrag://patterns/"):
-                def make_pattern_generator(uri):
+                # Use closure factory to fix variable capture issue
+                def make_pattern_generator(uri_str):
                     async def generator():
-                        return await get_construction_pattern_detail(str(uri))
+                        return await get_construction_pattern_detail(uri_str)
                     return generator
                 self.resource_registry.register_resource(
-                    resource, make_pattern_generator(resource.uri)
+                    resource, make_pattern_generator(str(resource.uri))
                 )
             elif str(resource.uri).startswith("graphrag://embeddings/"):
-                def make_embedding_generator(uri):
+                # Use closure factory to fix variable capture issue
+                def make_embedding_generator(uri_str):
                     async def generator():
-                        return await get_embedding_strategy_detail(str(uri))
+                        return await get_embedding_strategy_detail(uri_str)
                     return generator
                 self.resource_registry.register_resource(
-                    resource, make_embedding_generator(resource.uri)
+                    resource, make_embedding_generator(str(resource.uri))
                 )
             elif str(resource.uri).startswith("graphrag://retrieval/"):
-                def make_retrieval_generator(uri):
+                # Use closure factory to fix variable capture issue
+                def make_retrieval_generator(uri_str):
                     async def generator():
-                        return await get_retrieval_strategy_detail(str(uri))
+                        return await get_retrieval_strategy_detail(uri_str)
                     return generator
                 self.resource_registry.register_resource(
-                    resource, make_retrieval_generator(resource.uri)
+                    resource, make_retrieval_generator(str(resource.uri))
                 )
+            else:
+                self.logger.warning(f"No content generator registered for: {str(resource.uri)}")
 
         self.logger.info(f"Registered {len(GRAPHRAG_RESOURCES)} resources")
 
@@ -130,6 +141,19 @@ class GraphRAGMCPServer:
                 )
 
         self.logger.info(f"Registered {len(GRAPHRAG_PROMPTS)} prompts")
+
+    def _setup_tools(self) -> None:
+        """Set up all tools with access to existing resource and prompt handlers."""
+        self.logger.debug("Setting up tools...")
+
+        # Configure tool registry with access to resource and prompt handlers
+        self.tool_registry.set_resource_handler(self.resource_registry.get_content)
+        self.tool_registry.set_prompt_handler(self.prompt_registry.generate_prompt)
+
+        # Register all tools
+        self.tool_registry.register_all_tools()
+
+        self.logger.info(f"Registered {len(self.tool_registry.list_tools())} tools")
 
     def _setup_handlers(self) -> None:
         """Set up MCP server handlers."""
@@ -188,6 +212,29 @@ class GraphRAGMCPServer:
                 raise  # Re-raise our custom exceptions
             except Exception as e:
                 self.logger.error(f"Unexpected error generating prompt {name}: {e}")
+                raise
+
+        @self.server.list_tools()
+        async def handle_list_tools() -> List[types.Tool]:
+            """List available GraphRAG tools."""
+            try:
+                self.logger.debug("Listing tools")
+                return GRAPHRAG_TOOLS
+            except Exception as e:
+                self.logger.error(f"Error listing tools: {e}")
+                raise
+
+        @self.server.call_tool()
+        async def handle_call_tool(name: str, arguments: Dict) -> List[types.TextContent]:
+            """Execute GraphRAG tools that provide agent access to knowledge resources."""
+            try:
+                self.logger.debug(f"Executing tool: {name} with args: {list(arguments.keys())}")
+                result = await self.tool_registry.execute_tool(name, arguments)
+                return [types.TextContent(type="text", text=result)]
+            except GraphRAGError:
+                raise  # Re-raise our custom exceptions
+            except Exception as e:
+                self.logger.error(f"Unexpected error executing tool {name}: {e}")
                 raise
 
     async def run(self) -> None:

@@ -14,7 +14,12 @@ This MCP server offers hierarchical access to 59 pages of comprehensive research
 - **Technology Stacks & Frameworks** survey
 - **Consolidated Pattern Catalog** with implementation guidance
 
-The server organizes knowledge into **3 hierarchical levels**:
+The server provides **multiple access methods**:
+- **25 Knowledge Resources** - Hierarchical content from overview to specific techniques
+- **4 Specialized Prompts** - Domain-specific analysis and guidance
+- **10 MCP Tools** - Direct access for Claude Code agents and programmatic use
+
+Content is organized into **3 hierarchical levels**:
 1. **Overview** - High-level summaries and abstracts
 2. **Main Knowledge Areas** - Detailed coverage of each topic
 3. **Specific Techniques** - Implementation details for individual patterns
@@ -399,27 +404,33 @@ Once configured, you can interact with the GraphRAG Specialist Agent for:
 
 ### 🔄 Agent + MCP Server Workflow
 
-The agent follows this workflow:
+The GraphRAG specialist agent uses MCP tools to provide research-backed guidance:
 
 1. **Analyzes your question** to understand GraphRAG requirements
-2. **Queries the MCP server** for relevant research and patterns
-3. **Uses specialized prompts** for structured analysis
-4. **Provides comprehensive recommendations** with implementation details
-5. **Includes code examples** and architectural guidance
+2. **Executes relevant MCP tools** to access specific knowledge resources:
+   - `get_construction_patterns` for pattern recommendations
+   - `analyze_graphrag_pattern` for use case-specific analysis
+   - `query_graphrag_resource` for detailed technical content
+   - `compare_architectures` for technology decisions
+3. **Combines multiple tool results** for comprehensive analysis
+4. **Provides evidence-based recommendations** with source references
+5. **Includes implementation guidance** and code examples
 6. **Suggests evaluation metrics** and optimization strategies
+7. **Cites specific tools and resources used** for transparency
 
 ### 💡 Example Interaction
 
 **User**: "I need to implement GraphRAG for a legal document analysis system. The system needs to handle complex multi-party contracts and regulatory relationships."
 
 **GraphRAG Agent Response**:
-1. **Queries MCP server** for construction patterns and legal domain examples
-2. **Uses "analyze-graphrag-pattern" prompt** with legal domain context
-3. **Recommends Event Reification pattern** for multi-party relationships
-4. **Suggests Neo4j + Pinecone stack** with reasoning
-5. **Provides implementation roadmap** with specific phases
-6. **Includes code examples** for entity extraction and relationship modeling
-7. **Recommends evaluation metrics** for legal document accuracy
+1. **Uses `get_construction_patterns` tool** to access all available patterns
+2. **Executes `analyze_graphrag_pattern` tool** with legal domain context
+3. **Calls `query_graphrag_resource`** for detailed Event Reification pattern
+4. **Uses `compare_architectures` tool** to recommend Neo4j + Pinecone stack
+5. **Provides implementation roadmap** with specific phases and reasoning
+6. **Includes code examples** from pattern-specific resources
+7. **Recommends evaluation metrics** based on research findings
+8. **Cites all tools used**: Shows transparency in knowledge sources
 
 ### 🛡️ Best Practices
 
@@ -478,6 +489,69 @@ The server includes **4 specialized prompts** for GraphRAG analysis:
 2. **`design-knowledge-graph`** - Get design guidance for knowledge graphs
 3. **`implement-retrieval-strategy`** - Implementation guidance for retrieval strategies
 4. **`compare-architectures`** - Compare different graph architectures
+
+## 🔧 Available MCP Tools
+
+The server provides **10 MCP tools** that enable Claude Code agents to access the knowledge base:
+
+### 🎯 Generic Resource Access
+- **`query_graphrag_resource`** - Query any of the 25 GraphRAG knowledge resources by URI
+
+### 📚 Direct Knowledge Access Tools
+- **`get_construction_patterns`** - Get the 7 knowledge graph construction patterns
+- **`get_embedding_strategies`** - Get the 5 embedding fusion strategies
+- **`get_retrieval_strategies`** - Get the 6 retrieval and search strategies
+- **`get_architectural_tradeoffs`** - Get analysis of graph model architectures
+- **`get_technology_stacks`** - Get comprehensive framework and platform survey
+
+### 🤖 Specialized Analysis Tools
+- **`analyze_graphrag_pattern`** - Analyze which pattern fits a specific use case
+- **`compare_architectures`** - Compare graph architectures for a use case
+- **`design_knowledge_graph`** - Get design guidance for knowledge graphs
+- **`implement_retrieval_strategy`** - Get implementation guidance for retrieval strategies
+
+### 🚀 Tool Usage Examples
+
+**Generic Resource Query:**
+```python
+# Access any resource directly
+await query_graphrag_resource({"resource_uri": "graphrag://construction-patterns"})
+```
+
+**Direct Knowledge Access:**
+```python
+# Get specific knowledge areas
+await get_construction_patterns({})
+await get_embedding_strategies({})
+await get_retrieval_strategies({})
+```
+
+**Specialized Analysis:**
+```python
+# Analyze patterns for your use case
+await analyze_graphrag_pattern({
+    "use_case": "healthcare patient records",
+    "requirements": "HIPAA compliance, temporal data",
+    "data_types": "clinical notes, lab results"
+})
+
+# Compare architectures
+await compare_architectures({
+    "use_case": "financial compliance knowledge graph",
+    "scale": "50M entities",
+    "performance_requirements": "real-time queries"
+})
+```
+
+**Knowledge Graph Design:**
+```python
+# Get design guidance
+await design_knowledge_graph({
+    "domain": "healthcare",
+    "data_sources": "EHR systems, medical literature",
+    "integration_requirements": "HL7 FHIR compliance"
+})
+```
 
 ## 💡 Usage Examples
 
@@ -546,15 +620,16 @@ This project features a **distinguished engineer-ready** modular architecture:
 
 ## 🔍 Key Features
 
-- **📚 Comprehensive Knowledge Base**: 59 pages of research distilled into structured resources
+- **📚 Comprehensive Knowledge Base**: 59 pages of research distilled into 25 structured resources
 - **🏗️ Hierarchical Organization**: 3-level structure for different detail needs
-- **🧠 AI-Optimized**: Designed specifically for AI agent consumption
-- **⚡ Fast Access**: Efficient resource retrieval with minimal latency
-- **🔄 Standard Compliant**: Full MCP protocol compliance
-- **🎯 Specialized Prompts**: Domain-specific prompts for GraphRAG analysis
+- **🔧 MCP Tools Integration**: 10 tools enabling direct access for Claude Code agents
+- **🧠 AI-Optimized**: Designed specifically for AI agent consumption with tool-based access
+- **⚡ Fast Access**: Efficient resource and tool execution with minimal latency
+- **🔄 Standard Compliant**: Full MCP protocol compliance (resources, prompts, and tools)
+- **🎯 Specialized Prompts**: 4 domain-specific prompts for GraphRAG analysis
 - **📖 Complete Fidelity**: 100% faithful to original research content
 - **🔧 Enterprise-Ready**: Modular, maintainable, and extensible architecture
-- **🤖 Specialized Agent**: Pre-configured GraphRAG expert agent for Claude Code integration
+- **🤖 Specialized Agent**: Pre-configured GraphRAG expert agent with full MCP tool access
 
 ## 🛠️ Development
 
