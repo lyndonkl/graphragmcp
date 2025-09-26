@@ -23,9 +23,10 @@ class ResourceRegistry:
         content_generator: Callable[[], Awaitable[str]]
     ) -> None:
         """Register a resource with its content generator."""
-        self.logger.debug(f"Registering resource: {resource.uri}")
-        self._resources[resource.uri] = resource
-        self._content_generators[resource.uri] = content_generator
+        uri_str = str(resource.uri)
+        self.logger.debug(f"Registering resource: {uri_str}")
+        self._resources[uri_str] = resource
+        self._content_generators[uri_str] = content_generator
 
     def get_resources(self) -> List[types.Resource]:
         """Get all registered resources."""

@@ -38,3 +38,22 @@ class PromptNotFoundError(GraphRAGError):
         message = f"Prompt not found: {prompt_name}"
         super().__init__(message, "PROMPT_NOT_FOUND")
         self.prompt_name = prompt_name
+
+
+class ToolNotFoundError(GraphRAGError):
+    """Raised when a requested tool is not found."""
+
+    def __init__(self, tool_name: str):
+        message = f"Tool not found: {tool_name}"
+        super().__init__(message, "TOOL_NOT_FOUND")
+        self.tool_name = tool_name
+
+
+class ToolExecutionError(GraphRAGError):
+    """Raised when tool execution fails."""
+
+    def __init__(self, tool_name: str, details: str):
+        message = f"Failed to execute tool {tool_name}: {details}"
+        super().__init__(message, "TOOL_EXECUTION_FAILED")
+        self.tool_name = tool_name
+        self.details = details
